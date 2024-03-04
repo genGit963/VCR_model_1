@@ -321,6 +321,8 @@ while True:
             time.sleep(3)
     finally:
         print("all done!")
+    
+    GPIO.setWarning(False)
 
 
 
