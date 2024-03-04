@@ -33,13 +33,6 @@ factory = PiGPIOFactory()
 
 # -------------------------------------------- ultilities ---------------------------------------------------
 
-# ----- clamper -------
-def pick_obj():
-    pass
-
-def drop_obj():
-    pass
-
 
 # -------------------------------------------- Distance -----------------------------------------------------
 
@@ -134,9 +127,9 @@ def kinematics(d_cm):
             
 def ServoControlling(dof_2, dof_3):
     print("------------------------------ Servo Controlling -------------------------------")
-    servo1 = AngularServo(SERVO1_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
-    servo2 = AngularServo(SERVO2_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
-    servo3 = AngularServo(SERVO3_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
+    servo1 = AngularServo(SERVO1_PIN, initial_angle=100, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
+    servo2 = AngularServo(SERVO2_PIN, initial_angle=100, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
+    servo3 = AngularServo(SERVO3_PIN, initial_angle=180, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
     clamper = Servo(SERVO4_PIN, min_pulse_width=0.0006, max_pulse_width=0.002, frame_width=0.09, pin_factory=factory)
 
     dof2 = dof_2 + 10
@@ -152,7 +145,7 @@ def ServoControlling(dof_2, dof_3):
     clamper_last_toggle_time = time.time()  # Initialize last toggle time
 
     try:
-        for i in range(2):
+        for i in range(1):
         
             print("---->Open Clamper")
             clamper.max()
@@ -194,9 +187,9 @@ def ServoControlling(dof_2, dof_3):
                 time.sleep(2)
                 print(" In the dustbin Done !!")
 
-                servo1.angle = 100
-                time.sleep(1)
                 servo3.angle = 0
+                time.sleep(1)
+                servo1.angle = 0
                 time.sleep(1)
                 servo2.angle = 0
                 time.sleep(1)
@@ -307,7 +300,7 @@ def pick_mechanism():
     print("-->pm: dof2: {}, dof3: {}".format(dof2, dof3))
     ServoControlling(dof_2=dof2, dof_3=dof3)
     time.sleep(2)
-    print("-->  done picking ð <---")
+    print("-->  done picking Ã°ÂÂÂ <---")
 
 
 # -------------------------------------------- operator ----------------------------------------------------
