@@ -308,7 +308,7 @@ while True:
             print("actuating: pick")
             pick_mechanism()
     finally:
-        GPIO.cleanup()
+        print("all done!")
 
 
 
