@@ -1,11 +1,13 @@
 import math
 import numpy as np
 
+
+
 deg = 57.29577 # def = rad * (180/pi = 57.29277)
 
 arm = 12 # length of arm in cm
-farm = 26.5 #26.5 # length of forearm in cm
-bh = 14-8 #surface14 # height of base motor in cm
+farm = 26.5 # length of forearm in cm
+bh = 14 # height of base motor in cm
 
 bc = 7 # 5+2.5 : bc : dist from base to camera
 rhc = 12 # rhc: robotic hand working contrained distance from camera
@@ -62,19 +64,8 @@ def kinematics(d_cm):
 
             # time.sleep(2)
             print("elbow motor: dof3: ", dof3)
-            print("actual dof3: 270-dof3: ", 270 - dof3)
+            print("actual dof3: 180-dof3: ", 180 - dof3)
             #servo3.angle = 180-dof3
 
-            print('dof2:{} dof3: {} 270-dof3:{}'.format(dof2, dof3, 270-dof3))
-
-            return dof2, dof3, 270-dof3
-         
-
-    else:
-       print("Out of Working Radius !!");
-
-while True:
-   dist = float(input("Distance: "))
-   kinematics(dist)
-   if(dist<0):
-      break
+dis = float(input("dist: "))
+kinematics(dis)

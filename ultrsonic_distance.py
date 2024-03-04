@@ -1,7 +1,5 @@
 import RPi.GPIO as GPIO
 import time
-import math
-import numpy as np
 import RT_IK as IK
 import IK_angle_eval_with_clamper as SC
 
