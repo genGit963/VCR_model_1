@@ -22,6 +22,7 @@ pi_dof3 = 300-dof3
 hpi_dof3 = 90+dof3
 
 
+
 # ------------ Clamper ----------------
 clamper_open_time = 2  # Time to keep clamper open (in seconds)
 clamper_close_time = 4  # Time to keep clamper closed (in seconds)
