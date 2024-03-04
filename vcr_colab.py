@@ -119,9 +119,16 @@ def kinematics(d_cm):
             #servo3.angle = 180-dof3 
             print("dof2:{}, dof3:{}".format(dof2, dof3))
             return dof2, dof3
-
-      else: 
-        print(" -----> math domain error")
+         else:
+             print("---X out  of [0,270] dof-range")
+             return 0,0
+      else:
+          print("---X out of [-1,1] range")
+          return  0,0
+      
+    else:
+        print(" -----X math domain error")
+        return 0,0
     
 # -------------------------------------------- servo controls -----------------------------------------------
             
@@ -186,6 +193,13 @@ def ServoControlling(dof2, dof3):
                 clamper.angle = 90 #open clamper
                 time.sleep(2)
                 print(" In the dustbin Done !!")
+
+                servo1.angle = 100
+                time.sleep(1)
+                servo3.angle = 0
+                time.sleep(1)
+                servo2.angle = 0
+                time.sleep(1)
                 # break
                 
 
@@ -322,7 +336,6 @@ while True:
     finally:
         print("all done!")
     
-    GPIO.setWarning(False)
 
 
 
