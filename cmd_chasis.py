@@ -186,3 +186,9 @@ while True:
         right()
     
 GPIO.cleanup()
+
+
+
+# corection
+
+1. distance try catch 

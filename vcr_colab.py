@@ -2,6 +2,7 @@
 from gpiozero import DistanceSensor,Servo,AngularServo
 from gpiozero.pins.pigpio import PiGPIOFactory
 import RPi.GPIO as GPIO
+import socket
 import time
 import math
 import numpy as np
@@ -59,6 +60,7 @@ wr = bc + rhc #wr: working radius from basemotor centre to object
 
 def kinematics(d_cm):
     print("------------------------------ Kinematics ------------------------------")
+    d_cm -= 3
     d_cm += bc
 
     if d_cm > wr:
@@ -129,7 +131,7 @@ def ServoControlling(dof_2, dof_3):
     print("------------------------------ Servo Controlling -------------------------------")
     servo1 = AngularServo(SERVO1_PIN, initial_angle=100, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
     servo2 = AngularServo(SERVO2_PIN, initial_angle=100, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
-    servo3 = AngularServo(SERVO3_PIN, initial_angle=180, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
+    servo3 = AngularServo(SERVO3_PIN, initial_angle=150, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
     clamper = Servo(SERVO4_PIN, min_pulse_width=0.0006, max_pulse_width=0.002, frame_width=0.09, pin_factory=factory)
 
     dof2 = dof_2 + 10
@@ -145,7 +147,7 @@ def ServoControlling(dof_2, dof_3):
     clamper_last_toggle_time = time.time()  # Initialize last toggle time
 
     try:
-        for i in range(1):
+        for i in range(2):
         
             print("---->Open Clamper")
             clamper.max()
@@ -189,9 +191,9 @@ def ServoControlling(dof_2, dof_3):
 
                 servo3.angle = 0
                 time.sleep(1)
-                servo1.angle = 0
+                servo1.angle = 100
                 time.sleep(1)
-                servo2.angle = 0
+                servo2.angle = 20
                 time.sleep(1)
                 # break
                 
@@ -236,7 +238,7 @@ pwmB = GPIO.PWM(enB, 100)
 pwmA.start(100)  # Set initial duty cycle to 50%
 pwmB.start(100)
 
-def backward():
+def forward():
     GPIO.output(in1, GPIO.HIGH)
     GPIO.output(in2, GPIO.LOW)
     GPIO.output(in3, GPIO.HIGH)
@@ -248,7 +250,7 @@ def backward():
     GPIO.output(in4, GPIO.LOW)
     
 
-def forward():
+def backward():
     GPIO.output(in1, GPIO.LOW)
     GPIO.output(in2, GPIO.HIGH)
     GPIO.output(in3, GPIO.LOW)
@@ -259,10 +261,10 @@ def forward():
     GPIO.output(in3, GPIO.LOW)
     GPIO.output(in4, GPIO.LOW)
 
-def left():
-    GPIO.output(in1, GPIO.LOW)
+def right():
+    GPIO.output(in1, GPIO.HIGH)
     GPIO.output(in2, GPIO.LOW)
-    GPIO.output(in3, GPIO.HIGH)
+    GPIO.output(in3, GPIO.LOW)
     GPIO.output(in4, GPIO.LOW)
     time.sleep(2)
     GPIO.output(in1, GPIO.LOW)
@@ -270,10 +272,10 @@ def left():
     GPIO.output(in3, GPIO.LOW)
     GPIO.output(in4, GPIO.LOW)
 
-def right():
-    GPIO.output(in1, GPIO.HIGH)
+def left():
+    GPIO.output(in1, GPIO.LOW)
     GPIO.output(in2, GPIO.LOW)
-    GPIO.output(in3, GPIO.LOW)
+    GPIO.output(in3, GPIO.HIGH)
     GPIO.output(in4, GPIO.LOW)
     time.sleep(3)
     GPIO.output(in1, GPIO.LOW)
@@ -300,14 +302,25 @@ def pick_mechanism():
     print("-->pm: dof2: {}, dof3: {}".format(dof2, dof3))
     ServoControlling(dof_2=dof2, dof_3=dof3)
     time.sleep(2)
-    print("-->  done picking Ã°ÂÂÂ <---")
+    print("-->  done picking Ã <---")
 
 
 # -------------------------------------------- operator ----------------------------------------------------
+sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+sock.bind((HOST,PORT))
+sock.listen(1)
+
+print(f"Listening for connection on {HOST}:{PORT}")
+conn,addr = sock.accept()
+print(f"Connection from {addr}")
 
 while True:
     try:
-        received_text = input("Enter command: ")
+        data = conn.recv(1024)
+        if not data:
+         break
+        
+        received_text=data.decode()
         print(f"Recieved Text:{received_text}")
         if "forward" in received_text:
             print("actuating: forward")
@@ -327,3 +340,4 @@ while True:
             time.sleep(3)
     finally:
         print("all done!")
+
