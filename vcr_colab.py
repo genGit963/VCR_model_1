@@ -53,6 +53,7 @@ def measureDistance():
 
 
 # -------------------------------------------- Kinematics ---------------------------------------------------
+
 deg = 57.29577 # def = rad * (180/pi = 57.29277)
 
 arm = 12 # length of arm in cm
@@ -117,13 +118,14 @@ def kinematics(d_cm):
             # print("actual dof3: 180-dof3: ", 180 - dof3)
             #servo3.angle = 180-dof3 
             print("dof2:{}, dof3:{}".format(dof2, dof3))
+            return dof2, dof3
 
       else: 
         print(" -----> math domain error")
     
 # -------------------------------------------- servo controls -----------------------------------------------
             
-def ServoControlling(dof2, dof3 ):
+def ServoControlling(dof2, dof3):
     print("------------------------------ Servo Controlling -------------------------------")
     servo1 = AngularServo(SERVO1_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
     servo2 = AngularServo(SERVO2_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
@@ -143,55 +145,56 @@ def ServoControlling(dof2, dof3 ):
     clamper_last_toggle_time = time.time()  # Initialize last toggle time
 
     try:
-    # for i in range(3):
+        for i in range(2):
         
-        print("----> Open Clamper")
-        clamper.max()
-        time.sleep(2)  
+            print("---->Open Clamper")
+            clamper.max()
+            time.sleep(2)  
 
-        print("----> servo1 ")     
-        servo1.angle = 100
-        time.sleep(2)
+            print("---->servo1 ")     
+            servo1.angle = 100
+            time.sleep(2)
 
-        print("----> servo2 ")
-        #dof2 += 5
-        servo2.angle = dof2
-        time.sleep(2)
+            print("----> servo2 ")
+            #dof2 += 5
+            servo2.angle = dof2
+            time.sleep(2)
 
-        print("\n----->servo3")
-        #pi_dof3 += 5
-        servo3.angle = pi_dof3
-        time.sleep(2)
+            print("\n----->servo3")
+            #pi_dof3 += 5
+            servo3.angle = pi_dof3
+            time.sleep(2)
 
-        current_time = time.time()
-        if clamper_open and current_time - clamper_last_toggle_time >= clamper_close_time:
-            clamper.angle = 90  # Open clamper
-            clamper_open = True
-            clamper_last_toggle_time = current_time
-            # clamped = input("Will it clamp? : ")
-            time.sleep(2)
-            clamper.angle = 0
-            time.sleep(2)
-            servo3.angle = 100
-            time.sleep(2)
-            servo2.angle = 100
-            time.sleep(2)
-            servo1.angle = 20 #dustbin
-            time.sleep(2)
-            servo3.angle = 170
-            time.sleep(2)
-            clamper.angle = 90 #open clamper
-            time.sleep(2)
-            print("Done !!")
-            # break
-            
-
-        elif clamper_open and current_time - clamper_last_toggle_time >= clamper_open_time:
-            clamper.angle = 0  # Close clamper
-            clamper_open = False
-            clamper_last_toggle_time = current_time
+            current_time = time.time()
+            if clamper_open and current_time - clamper_last_toggle_time >= clamper_close_time:
+                clamper.max()  # Open clamper
+                time.sleep(1)
+                clamper_open = True
+                clamper_last_toggle_time = current_time
+                # clamped = input("Will it clamp? : ")
+                time.sleep(2)
+                clamper.min() #grap
+                time.sleep(2)
+                servo3.angle = 100
+                time.sleep(2)
+                servo2.angle = 100
+                time.sleep(2)
+                servo1.angle = 20 #dustbin
+                time.sleep(2)
+                servo3.angle = 170
+                time.sleep(2)
+                clamper.angle = 90 #open clamper
+                time.sleep(2)
+                print(" In the dustbin Done !!")
+                # break
                 
+
+            elif clamper_open and current_time - clamper_last_toggle_time >= clamper_open_time:
+                clamper.angle = 0  # Close clamper
+                clamper_open = False
+                clamper_last_toggle_time = current_time
                     
+                        
     finally:
         # Cleanup
         servo1.close()
@@ -199,8 +202,8 @@ def ServoControlling(dof2, dof3 ):
         servo2.close()
         clamper.close()
 
-# -------------------------------------------- servo listens ------------------------------------------------
 
+# -------------------------------------------- servo listens ------------------------------------------------
 
 HOST ="0.0.0.0"  # Listen on all interfaces
 PORT =5000
@@ -220,7 +223,7 @@ GPIO.setup(in4, GPIO.OUT)
 GPIO.setup(enA, GPIO.OUT)
 GPIO.setup(enB, GPIO.OUT)
 
-def forward():
+def backward():
     GPIO.output(in1, GPIO.HIGH)
     GPIO.output(in2, GPIO.LOW)
     GPIO.output(in3, GPIO.HIGH)
@@ -232,7 +235,7 @@ def forward():
     GPIO.output(in4, GPIO.LOW)
     
 
-def backward():
+def forward():
     GPIO.output(in1, GPIO.LOW)
     GPIO.output(in2, GPIO.HIGH)
     GPIO.output(in3, GPIO.LOW)
@@ -243,7 +246,7 @@ def backward():
     GPIO.output(in3, GPIO.LOW)
     GPIO.output(in4, GPIO.LOW)
 
-def right():
+def left():
     GPIO.output(in1, GPIO.LOW)
     GPIO.output(in2, GPIO.LOW)
     GPIO.output(in3, GPIO.HIGH)
@@ -254,7 +257,7 @@ def right():
     GPIO.output(in3, GPIO.LOW)
     GPIO.output(in4, GPIO.LOW)
 
-def left():
+def right():
     GPIO.output(in1, GPIO.HIGH)
     GPIO.output(in2, GPIO.LOW)
     GPIO.output(in3, GPIO.LOW)
@@ -277,8 +280,16 @@ def stop():
     GPIO.output(in4, GPIO.LOW)
 
 def pick_mechanism():
-    print("pick_mechanism")
-    pass
+    print("----> pick_mechanism <---")
+    discoverd_dist = measureDistance()
+    print("-->pm, discoverd_distance: ", discoverd_dist)
+    dof2, dof3 = kinematics(discoverd_dist)
+    print("-->pm: dof2: {}, dof3: {}".format(dof2, dof3))
+    ServoControlling(dof2=dof2, dof3=dof3)
+    time.sleep(2)
+    print("-->  done picking 😎 <---")
+
+
 
 # You can use PWM to control motor speed if needed
 pwmA = GPIO.PWM(enA, 100)  # Set PWM frequency to 50 Hz
@@ -307,6 +318,7 @@ while True:
         if "pick" in received_text:
             print("actuating: pick")
             pick_mechanism()
+            time.sleep(3)
     finally:
         print("all done!")
 
