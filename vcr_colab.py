@@ -58,7 +58,7 @@ deg = 57.29577 # def = rad * (180/pi = 57.29277)
 
 arm = 12 # length of arm in cm
 farm = 26.5 # length of forearm in cm
-bh = 14 # height of base motor in cm
+bh = 3 #14 # height of base motor in cm
 
 bc = 7 # 5+2.5 : bc : dist from base to camera
 rhc = 12 # rhc: robotic hand working contrained distance from camera
@@ -120,27 +120,27 @@ def kinematics(d_cm):
             print("dof2:{}, dof3:{}".format(dof2, dof3))
             return dof2, dof3
          else:
-             print("---X out  of [0,270] dof-range")
+             print(" ---X out  of [0,270] dof-range")
              return 0,0
       else:
-          print("---X out of [-1,1] range")
+          print(" ---X out of [-1,1] range")
           return  0,0
       
     else:
-        print(" -----X math domain error")
+        print(" ---X math domain error")
         return 0,0
     
 # -------------------------------------------- servo controls -----------------------------------------------
             
-def ServoControlling(dof2, dof3):
+def ServoControlling(dof_2, dof_3):
     print("------------------------------ Servo Controlling -------------------------------")
     servo1 = AngularServo(SERVO1_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
     servo2 = AngularServo(SERVO2_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
     servo3 = AngularServo(SERVO3_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
     clamper = Servo(SERVO4_PIN, min_pulse_width=0.0006, max_pulse_width=0.002, frame_width=0.09, pin_factory=factory)
 
-    dof2 = 50 + 10
-    dof3 = 115 -10
+    dof2 = dof_2 + 10
+    dof3 = dof_3 -10
     pi_dof3 = 300-dof3
     hpi_dof3 = 90+dof3
 
@@ -190,7 +190,7 @@ def ServoControlling(dof2, dof3):
                 time.sleep(2)
                 servo3.angle = 170
                 time.sleep(2)
-                clamper.angle = 90 #open clamper
+                clamper.max() #open clamper
                 time.sleep(2)
                 print(" In the dustbin Done !!")
 
@@ -236,6 +236,12 @@ GPIO.setup(in3, GPIO.OUT)
 GPIO.setup(in4, GPIO.OUT)
 GPIO.setup(enA, GPIO.OUT)
 GPIO.setup(enB, GPIO.OUT)
+
+# You can use PWM to control motor speed if needed
+pwmA = GPIO.PWM(enA, 100)  # Set PWM frequency to 50 Hz
+pwmB = GPIO.PWM(enB, 100)
+pwmA.start(100)  # Set initial duty cycle to 50%
+pwmB.start(100)
 
 def backward():
     GPIO.output(in1, GPIO.HIGH)
@@ -299,17 +305,10 @@ def pick_mechanism():
     print("-->pm, discoverd_distance: ", discoverd_dist)
     dof2, dof3 = kinematics(discoverd_dist)
     print("-->pm: dof2: {}, dof3: {}".format(dof2, dof3))
-    ServoControlling(dof2=dof2, dof3=dof3)
+    ServoControlling(dof_2=dof2, dof_3=dof3)
     time.sleep(2)
-    print("-->  done picking 😎 <---")
+    print("-->  done picking ð <---")
 
-
-
-# You can use PWM to control motor speed if needed
-pwmA = GPIO.PWM(enA, 100)  # Set PWM frequency to 50 Hz
-pwmB = GPIO.PWM(enB, 100)
-pwmA.start(100)  # Set initial duty cycle to 50%
-pwmB.start(100)
 
 # -------------------------------------------- operator ----------------------------------------------------
 
@@ -335,7 +334,3 @@ while True:
             time.sleep(3)
     finally:
         print("all done!")
-    
-
-
-
