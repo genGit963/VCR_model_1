@@ -1,7 +1,6 @@
 from gpiozero import Servo, AngularServo
 from gpiozero.pins.pigpio import PiGPIOFactory
 import time
-import cv2
 
 #------------------------- Ultrasonic setup ---------------
 
@@ -16,14 +15,13 @@ factory = PiGPIOFactory()
 servo1 = AngularServo(SERVO1_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
 servo2 = AngularServo(SERVO2_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
 servo3 = AngularServo(SERVO3_PIN, min_angle=0, max_angle=270, min_pulse_width=0.0006, max_pulse_width=0.0023,pin_factory=factory)
-clamper = AngularServo(SERVO4_PIN, min_angle=0, max_angle=90, min_pulse_width=0.0006, max_pulse_width=0.0023, pin_factory=factory)
+clamper = Servo(SERVO4_PIN, min_pulse_width=0.0006, max_pulse_width=0.0023, pin_factory=factory)
+
 
 def ServoControlling(dof2, dof3):
     dof2 = 55 + 10
     dof3 = 115 -10
     pi_dof3 = 300-dof3
-    hpi_dof3 = 90+dof3
-
 
     # ------------ Clamper ----------------
     clamper_open_time = 2  # Time to keep clamper open (in seconds)

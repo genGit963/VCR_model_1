@@ -7,32 +7,32 @@ HOST = "0.0.0.0"  # Listen on all interfaces
 PORT = 5000
 
 # Define motor driver pins
-motor_factory = PiGPIOFactory()
+factory = PiGPIOFactory()
 
-left_motor = Motor(17, 27, factory=motor_factory)  # Left motor forward, backward
-right_motor = Motor(22, 23, factory=motor_factory)  # Right motor forward, backward
+left_motor = Motor(17, 27, pin_factory=factory)  # Left motor forward, backward
+right_motor = Motor(22, 23, pin_factory=factory)  # Right motor forward, backward
 
-def forward():
+def backward(): 
     left_motor.forward()
     right_motor.forward()
     time.sleep(2)
     left_motor.stop()
     right_motor.stop()
 
-def backward():
+def forward():
     left_motor.backward()
     right_motor.backward()
     time.sleep(2)
     left_motor.stop()
     right_motor.stop()
 
-def right():
+def left():
     left_motor.stop()
     right_motor.forward()
     time.sleep(2)
     right_motor.stop()
 
-def left():
+def right():
     left_motor.forward()
     right_motor.stop()
     time.sleep(2)
