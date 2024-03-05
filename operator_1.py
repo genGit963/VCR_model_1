@@ -11,7 +11,7 @@ stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, fr
 stream.start_stream()
 
 # Set up socket connection
-rec_host = '192.168.18.223'
+rec_host = '192.168.106.2'
 port = 5000
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

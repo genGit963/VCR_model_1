@@ -302,7 +302,7 @@ def pick_mechanism():
     print("-->pm: dof2: {}, dof3: {}".format(dof2, dof3))
     ServoControlling(dof_2=dof2, dof_3=dof3)
     time.sleep(2)
-    print("-->  done picking Ã <---")
+    print("-->  done picking <---")
 
 
 # -------------------------------------------- operator ----------------------------------------------------
@@ -334,10 +334,9 @@ while True:
         if "right" in received_text:
             print("actuating: right")
             right()
-        if "pick" in received_text:
+        if "grab" in received_text:
             print("actuating: pick")
             pick_mechanism()
             time.sleep(3)
     finally:
         print("all done!")
-
